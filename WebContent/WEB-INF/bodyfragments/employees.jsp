@@ -3,17 +3,30 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-6">
-			<button class="dropdown btn btn-default dropdown-toggle">
-				<span>Sort by</span>
-				<div class="dropdown-content">
-					<p>ASC Users</p>
-					<p>DESC Users</p>
-					<p>ASC Departments</p>
-					<p>DESC Departments</p>
-				</div>
-			</button>
+			<form action="${pageContext.request.contextPath}/ordertype" method="post">
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<div class="controls controls-row">
+				<select name="ordertype">
+					<c:forEach items="${sorts}" var="sort">
+		             	<c:choose>
+		             		<c:when test="${sort == sortkey}">
+		             			<option selected value="${sort}">${sort}</option>
+		             		</c:when>
+		             		<c:otherwise>
+		             			<option value="${sort}">${sort}</option>
+		             		</c:otherwise>
+						</c:choose>
+	             	</c:forEach>
+					<!-- <option value="1">ASC Users</option>
+					<option value="2">DESC Users</option>
+					<option value="3">ASC Departments</option>
+					<option value="4">DESC Departments</option> -->
+				</select>
+				<button type="submit" class="btn btn-warning">Sort</button>
+			</div>
+			</form>
 		</div>
-        
+       
         <div class="col-md-4">
 			<div id="custom-search-input">
                 <div class="input-group">
@@ -28,7 +41,7 @@
         </div>
         
         <div class="col-md-1">
-	        <button type="button" class="button2" onclick="location.href='employee/new'" title="Add">
+	        <button type="button" class="button2" onclick="location.href='${pageContext.request.contextPath}/employee/new'" title="Add">
 	            <span class="glyphicon glyphicon-plus"></span> Add
 	        </button>
         </div>
@@ -64,4 +77,52 @@
             </div>
         </div>
     </div>
+    
+    <div>
+	<% int totalPage = (int)session.getAttribute("totalPage");
+		int back = 0;
+		int next = 0;
+		boolean has_next = false;
+		int page_cur = (int)request.getAttribute("page_pre");
+		if(totalPage<=3){
+			for (int pageId=1; pageId<= totalPage; pageId++){%>
+			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<%}
+		}else{
+		//Nut Back
+		if (page_cur != 1){
+			back =page_cur-1;
+		%>
+			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/1"><i>First</i></a></button>
+			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=back%>"><i>Back</i></a></button>
+		<%} else {
+			back = 1;
+		}
+		//Hien Thi Trang
+		if(page_cur+2 < totalPage){
+			for (int pageId=page_cur; pageId<= page_cur+2; pageId++){%>
+			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<%}
+		} else if(page_cur+2 == totalPage){
+			for (int pageId=page_cur; pageId<= page_cur+2; pageId++){%>
+			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<%}
+		} else {
+			for (int pageId=(totalPage-2); pageId<= totalPage; pageId++){%>
+			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<%}
+		}
+		if(page_cur < totalPage){
+			has_next = true;
+			next=page_cur+1;
+		}
+		if(has_next == true){%>			
+			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=next%>"><i>Next</i></a></button>
+		<%}
+		if(page_cur != totalPage){
+		%>
+		<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=totalPage%>"><i>Last</i></a></button>
+		<%}%>
+		<%}%>
+	</div>
 </div>

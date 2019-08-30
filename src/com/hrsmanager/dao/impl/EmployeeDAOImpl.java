@@ -117,4 +117,16 @@ public class EmployeeDAOImpl extends JdbcDaoSupport implements EmployeeDAO{
 		String sql = "Select * from Employees";
 		return this.getJdbcTemplate().query(sql, new EmployeeMapper());
 	}
+	
+	@Override
+	public List<EmployeeInfo> listPageByEmployeeName(int pageId, int total, String key, String type){
+		String sql = "Select * from Employees where status_id NOT IN (3,4) Order By " +key +" "+type+" Limit " + pageId+","+total;
+		return this.getJdbcTemplate().query(sql, new EmployeeMapper());
+	}
+	
+	@Override
+	public List<EmployeeInfo> listPageByDepartmentName(int pageId, int total, String key, String type){
+		String sql ="Select * from Employees e where status_id NOT IN (3,4) Order by (Select d.department_name from Departments d where e.department_id = d.department_id) "+type+" Limit "+pageId+","+total;
+		return this.getJdbcTemplate().query(sql, new EmployeeMapper());
+	}
 }

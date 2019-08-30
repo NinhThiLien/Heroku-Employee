@@ -45,7 +45,6 @@ public class EmployeeService implements UserDetailsService {
 		grantList.add(authority);
 		
 		UserDetails userDetails = (UserDetails) new User (emp.getEmail(), emp.getPassword(), grantList);
-		System.out.println(userDetails.getAuthorities());
 		return userDetails;
 	}
 	
@@ -104,6 +103,17 @@ public class EmployeeService implements UserDetailsService {
 		return list;
 	}
 	
+	public List<EmployeeInfo> listPage(int pageId, int total, String key, String type){
+		List<EmployeeInfo> listPage;
+		if("employee_name".equals(key)) {
+			listPage = employeeDAO.listPageByEmployeeName(pageId, total,key, type);
+		}
+		else {
+			listPage = employeeDAO.listPageByDepartmentName(pageId, total,key, type);
+		}
+		return listPage;
+	}
+	
 	public int newEmployeeInfo(EmployeeInfo emp,Integer department_id, Integer position_id, Integer role_id, Integer status_id, Date started_day ) {
 		emp.setStarted_day(started_day);
 		emp.setRoleId(role_id);
@@ -120,5 +130,13 @@ public class EmployeeService implements UserDetailsService {
 			return false;	//email not found
 		}
 		return true;		//email is already in use
+	}
+	
+	public boolean checkID(Integer employeeId) {
+		EmployeeInfo emp = employeeDAO.findEmployeeInfoByID(employeeId);
+		if (emp == null) {
+			return false;
+		}
+		return true;
 	}
 }

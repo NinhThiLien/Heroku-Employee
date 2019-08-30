@@ -40,7 +40,7 @@
 		             					<div class="input-group-addon">
 		             						<i class="fa fa-id-card"></i>
 		             					</div>
-		             					<input id="id" type="text" name="id" placeholder="EmployeeID" class="form-control input-md">
+		             					<input id="id" type="text" name="id" placeholder="EmployeeID" value="${id}"class="form-control input-md">
 		             				</div>
 		             			</div>
 		             		</div>
@@ -54,7 +54,7 @@
 		             					<span class="icon input-group-addon">
 		             						<i class="fa fa-user"></i>
 		             					</span>
-		             					<input id="name" name="name" type="text" value="${emp.employeeName}" class="form-control input-md">
+		             					<input id="name" name="name" type="text" value="${name}" class="form-control input-md">
 		             				</div>
 		             			</div>
 		             		</div>
@@ -68,7 +68,7 @@
 		             					<div class="icon input-group-addon">
 		             						<i class="fa fa-birthday-cake"></i>
 		             					</div>
-		             					<input id="dob" name="dob" type="date" placeholder="Date Of Birth" class="form-control input-md">
+		             					<input id="dob" name="dob" type="date" value="${dob}" placeholder="Date Of Birth" class="form-control input-md">
 		             				</div>
 		             			</div>
 		             		</div>
@@ -97,7 +97,7 @@
 		             					<div class="icon input-group-addon">
 		             						<i class="fa fa-map-marker"></i>
 		             					</div>
-		             					<input id="address" name="address" type="text" placeholder="Address" class="form-control input-md">
+		             					<input id="address" name="address" type="text" value="${address}" placeholder="Address" class="form-control input-md">
 		             				</div>
 		             			</div>
 							</div>
@@ -109,7 +109,7 @@
 		             					<div class="icon input-group-addon">
 		             						<i class="fa fa-phone"></i>
 		             					</div>
-		             					<input id="phone" name="phone" type="text" placeholder="Phone number" class="form-control input-md">
+		             					<input id="phone" name="phone" type="text" value="${phone}" placeholder="Phone number" class="form-control input-md">
 		             				</div>
 		             			</div>
 		             		</div>
@@ -123,7 +123,7 @@
 		             					<div class="icon input-group-addon">
 		             						<i class="fa fa-envelope-o"></i>
 		             					</div>
-		             					<input id="email" name="email" type="text" placeholder="Email Address" class="form-control input-md"
+		             					<input id="email" name="email" type="text" value="${email}" placeholder="Email Address" class="form-control input-md"
 		             						data-rule-checkemail="true">
 		             				</div>
 		             			</div>
@@ -138,7 +138,7 @@
 		             					<div class="icon input-group-addon">
 		             						<i class="fa fa-calendar"></i>
 		             					</div>
-		             					<input id="std" name="std" type="date" placeholder="Started Day" class="form-control input-md">
+		             					<input id="std" name="std" type="date" value="${std}" placeholder="Started Day" class="form-control input-md">
 		             				</div>
 		             			</div>
 		             		</div>
@@ -154,9 +154,23 @@
 		             					</div>
 		             					<select id="status_id" name="status_id" class="form-control input-md">
 		             						<option disabled selected value=""> -- select an option -- </option>
-		             						<c:forEach items="${listStatuses}" var="status">
-		             							<option value="${status.statusId}">${status.statusName}</option>
-		             						</c:forEach>
+		             						<c:if test="${status_id != null }">
+		             							<c:forEach items="${listStatuses}" var="status">
+		             								<c:if test="${status_id == status.statusId}">
+		             									<option disabled selected value="${status_id}">${status.statusName}</option>
+		             								</c:if>
+		             							</c:forEach>
+		             							<c:forEach items="${listStatuses}" var="status">
+		             								<c:if test="${status_id != status.statusId}">
+		             									<option value="${status.statusId}">${status.statusName}</option>
+		             								</c:if>
+		             							</c:forEach>
+		             						</c:if>
+		             						<c:if test="${status_id == null }">		             							
+		             							<c:forEach items="${listStatuses}" var="status">
+		             								<option value="${status.statusId}">${status.statusName}</option>
+		             							</c:forEach>
+		             						</c:if>
 		             					</select>
 		             				</div>
 		             			</div>
@@ -177,9 +191,23 @@
 		             					</div>
 		             					<select id="role_id" name="role_id" class="form-control input-md">
 		             						<option disabled selected value=""> -- select an option -- </option>
-		             						<c:forEach items="${listRoles}" var="role">
-		             							<option value="${role.roleId}">${role.roleName}</option>
-	             							</c:forEach>
+		             						<c:if test="${role_id != null }">
+		             							<c:forEach items="${listRoles}" var="role">
+		             								<c:if test="${role_id == role.roleId}">
+		             									<option disabled selected value="${role_id}">${role.roleName}</option>
+		             								</c:if>
+		             							</c:forEach>
+		             							<c:forEach items="${listRoles}" var="role">
+		             								<c:if test="${role_id != role.roleId}">
+		             									<option value="${role.roleId}">${role.roleName}</option>
+		             								</c:if>
+	             								</c:forEach>
+		             						</c:if>
+		             						<c:if test="${role_id == null }">
+		             							<c:forEach items="${listRoles}" var="role">
+		             								<option value="${role.roleId}">${role.roleName}</option>
+	             								</c:forEach>
+	             							</c:if>
 		             					</select>
 		             				</div>
 		             			</div>
@@ -200,9 +228,23 @@
 		             					</div>
 		             					<select id="department_id" name="department_id" class="form-control input-md">
 		             						<option disabled selected value=""> -- select an option -- </option>
-		             						<c:forEach items="${listDepartments}" var="department">
-		             							<option value="${department.departmentId}">${department.departmentName}</option>
-	             							</c:forEach>
+		             						<c:if test="${department_id != null }">
+		             							<c:forEach items="${listDepartments}" var="department">
+		             								<c:if test="${department_id == department.departmentId}">
+		             									<option selected value="${department_id}">${department.departmentName}</option>
+		             								</c:if>
+		             							</c:forEach>
+		             							<c:forEach items="${listDepartments}" var="department">
+		             								<c:if test="${department_id != department.departmentId}">
+		             									<option value="${department.departmentId}">${department.departmentName}</option>
+		             								</c:if>
+	             								</c:forEach>
+		             						</c:if>
+		             						<c:if test="${department_id == null }">		             			
+		             							<c:forEach items="${listDepartments}" var="department">
+		             								<option value="${department.departmentId}">${department.departmentName}</option>
+	             								</c:forEach>
+	             							</c:if>
 		             					</select>
 		             				</div>
 		             			</div>
@@ -219,9 +261,23 @@
 		             					</div>
 		             					<select id="position_id" name="position_id" class="form-control input-md">
 		             						<option disabled selected value=""> -- select an option -- </option>
-		             						<c:forEach items="${listPositions}" var="position">
-		             							<option value="${position.positionId}">${position.positionName}</option>
-	             							</c:forEach>
+		             						<c:if test="${position_id != null }">             							
+		             							<c:forEach items="${listPositions}" var="position">
+		             								<c:if test="${position_id == position.positionId}">
+		             									<option selected value="${position_id}">${position.positionName}</option>
+		             								</c:if>
+		             							</c:forEach>
+		             							<c:forEach items="${listPositions}" var="position">
+		             								<c:if test="${position_id != position.positionId}">
+		             									<option value="${position.positionId}">${position.positionName}</option>
+		             								</c:if>
+	             								</c:forEach>
+		             						</c:if>
+		             						<c:if test="${position_id == null }">
+		             							<c:forEach items="${listPositions}" var="position">
+		             								<option value="${position.positionId}">${position.positionName}</option>
+	             								</c:forEach>
+	             							</c:if>
 		             					</select>
 		             				</div>
 		             			</div>
@@ -231,7 +287,7 @@
 		             			<label class="col-sm-4 control-label" ></label>  
 		             			<div class="col-sm-5">
 		             				<input type="submit" class="btn btn-success" value="Submit">
-	             					<a href="/Employee_Management/employees" class="btn btn-danger">
+	             					<a onclick="window.history.back()" class="btn btn-danger">
 	             						<span class="glyphicon glyphicon-remove-sign"></span> Cancel
 	             					</a>
 		             			</div>

@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="<c:url value="/resources/css/employees.css"></c:url>">
 	<link rel="stylesheet" href="<c:url value="/resources/css/tooltipster.css"></c:url>">
 	<script src="<c:url value="/resources/js/tooltipster.js" />"></script>
-	<script src="<c:url value="/resources/js/classic.js" />"></script>
+	<script src="<c:url value="/resources/js/classic.js" />"></script>	
 </head>
 <body>
 	<tiles:insertAttribute name="header" />

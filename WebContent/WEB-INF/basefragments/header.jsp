@@ -40,7 +40,7 @@
 					</div>
 					<ul class="dropdown-menu pull-right" role="menu">
 						<% if (request.getSession().getAttribute("role").equals("ADMIN")){ %>
-							<li><a href="${pageContext.request.contextPath}/employees">Employee Management</a></li>
+							<li><a href="${pageContext.request.contextPath}/employees/1">Employee Management</a></li>
 							<li class="divider"></li>
 						<%} %>
 						<li><a href="${pageContext.request.contextPath}/employee/${emp_login.employeeId}">Profile</a></li>
