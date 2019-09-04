@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.hrsmanager.authentication.EmployeeService;
 import com.hrsmanager.model.DepartmentInfo;
@@ -73,8 +73,30 @@ public class EmployeeController {
 			sortkey = "DESC Users";
 		}
 		model.addAttribute("sortkey", sortkey);
-		String role = (String) session.getAttribute("role");
-		EmployeeInfo emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+		String role = null;
+		Cookie cookie = null;
+		Cookie[] cookies = request.getCookies();
+		String check_login = null;
+		EmployeeInfo emp_login = null;
+		for(int i = 0; i<cookies.length; i++) {
+			cookie = cookies[i];
+			if (cookie.getName().equals("emp_login")) {
+				check_login = cookie.getValue();
+			}
+			if (cookie.getName().equals("check_role")) {
+				role = cookie.getValue();
+			}
+		}
+		
+		if(check_login != null) {
+			emp_login = employeeService.findByID(Integer.valueOf(check_login));
+		} else {
+			emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+			role = (String) session.getAttribute("role");
+		}
+		model.addAttribute("emp_login", emp_login);
+		model.addAttribute("role", role);
+		
 		if (emp_login == null) {
 			return "redirect:/login";
 		} else {
@@ -168,8 +190,30 @@ public class EmployeeController {
 	@RequestMapping(value = { "/employee/{id}" }, method = RequestMethod.GET)
 	public String profile(@PathVariable int id, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		String role = (String) session.getAttribute("role");
-		EmployeeInfo emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+		String role = null;
+		Cookie cookie = null;
+		Cookie[] cookies = request.getCookies();
+		String check_login = null;
+		EmployeeInfo emp_login = null;
+		for(int i = 0; i<cookies.length; i++) {
+			cookie = cookies[i];
+			if (cookie.getName().equals("emp_login")) {
+				check_login = cookie.getValue();
+			}
+			if (cookie.getName().equals("check_role")) {
+				role = cookie.getValue();
+			}
+		}
+		
+		if(check_login != null) {
+			emp_login = employeeService.findByID(Integer.valueOf(check_login));
+		} else {
+			emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+			role = (String) session.getAttribute("role");
+		}
+		model.addAttribute("emp_login", emp_login);
+		model.addAttribute("role", role);
+		
 		if (emp_login == null) {
 			return "redirect:/login";
 		} else if (role.equals("ADMIN")) {
@@ -180,7 +224,7 @@ public class EmployeeController {
 			model.addAttribute("department", department);
 			model.addAttribute("emp", emp);
 			return "profile";
-		} else {
+			} else {
 			String position_name = positionDAO.findPositionByID(emp_login.getPositionId()).getPositionName();
 			DepartmentInfo department = (DepartmentInfo) departmentDAO.findDepartmentByID(emp_login.getDepartmentId());
 			model.addAttribute("position", position_name);
@@ -193,12 +237,34 @@ public class EmployeeController {
 	@RequestMapping(value = { "/employee/{id}/edit" }, method = RequestMethod.GET)
 	public String edit(@PathVariable int id, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		String role = (String) session.getAttribute("role");
-		EmployeeInfo emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+		String role = null;
+		Cookie cookie = null;
+		Cookie[] cookies = request.getCookies();
+		String check_login = null;
+		EmployeeInfo emp_login = null;
+		for(int i = 0; i<cookies.length; i++) {
+			cookie = cookies[i];
+			if (cookie.getName().equals("emp_login")) {
+				check_login = cookie.getValue();
+			}
+			if (cookie.getName().equals("check_role")) {
+				role = cookie.getValue();
+			}
+		}
+		
+		if(check_login != null) {
+			emp_login = employeeService.findByID(Integer.valueOf(check_login));
+		} else {
+			emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+			role = (String) session.getAttribute("role");
+		}
+		
+		model.addAttribute("emp_login", emp_login);
+		model.addAttribute("role", role);
+		
 		if (emp_login == null) {
 			return "redirect:/login";
-		} else {
-			if (role.equals("ADMIN")) {
+		} else if (role.equals("ADMIN")) {
 				EmployeeInfo emp = employeeService.findByID(id);
 				List<Status> listStatuses = statusDAO.listStatus();
 				List<Roles> listRoles = roleDAO.listRoles();
@@ -213,7 +279,6 @@ public class EmployeeController {
 				return "editprofile";
 			} else {
 				return "redirect:/employee/" + emp_login.getEmployeeId().toString();
-			}
 		}
 	}
 
@@ -282,8 +347,31 @@ public class EmployeeController {
 	public String show(Model model, HttpServletRequest request) {
 
 		HttpSession session = request.getSession();
-		String role = (String) session.getAttribute("role");
-		EmployeeInfo emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+		String role = null;
+		Cookie cookie = null;
+		Cookie[] cookies = request.getCookies();
+		String check_login = null;
+		EmployeeInfo emp_login = null;
+		for(int i = 0; i<cookies.length; i++) {
+			cookie = cookies[i];
+			if (cookie.getName().equals("emp_login")) {
+				check_login = cookie.getValue();
+			}
+			if (cookie.getName().equals("check_role")) {
+				role = cookie.getValue();
+			}
+		}
+		
+		if(check_login != null) {
+			emp_login = employeeService.findByID(Integer.valueOf(check_login));
+		} else {
+			emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+			role = (String) session.getAttribute("role");
+		}
+		
+		model.addAttribute("emp_login", emp_login);
+		model.addAttribute("role", role);
+		
 		if (emp_login == null) {
 			return "redirect:/login";
 		} else {
@@ -414,9 +502,39 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = { "/employee/{id}/change_password" }, method = { RequestMethod.GET })
-	public ModelAndView password(@PathVariable int id, HttpServletRequest request) {
-		EmployeeInfo emp = employeeService.findByID(id);
-		return new ModelAndView("password", "emp", emp);
+	public String password(@PathVariable int id, HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		String role = null;
+		Cookie cookie = null;
+		Cookie[] cookies = request.getCookies();
+		String check_login = null;
+		EmployeeInfo emp_login = null;
+		for(int i = 0; i<cookies.length; i++) {
+			cookie = cookies[i];
+			if (cookie.getName().equals("emp_login")) {
+				check_login = cookie.getValue();
+			}
+			if (cookie.getName().equals("check_role")) {
+				role = cookie.getValue();
+			}
+		}
+		
+		if(check_login != null) {
+			emp_login = employeeService.findByID(Integer.valueOf(check_login));
+		} else {
+			emp_login = (EmployeeInfo) session.getAttribute("emp_login");
+			role = (String) session.getAttribute("role");
+		}
+		
+		model.addAttribute("emp_login", emp_login);
+		model.addAttribute("role", role);
+
+		if (emp_login == null) {
+			return "redirect:/login";
+		} else {
+			model.addAttribute("emp", emp_login);
+			return "password";
+		}
 	}
 
 	@RequestMapping(value = { "/employee/{id}/update_password" }, method = { RequestMethod.POST })
