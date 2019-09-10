@@ -1,7 +1,9 @@
 package com.hrsmanager.controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,10 +63,12 @@ public class AuthenticationController {
 			session.setAttribute("errorString", errorString);
 			session.setAttribute("email", email);
 			session.setAttribute("password", password);
+			session.removeAttribute("message");
 			return "redirect:/login";
 		}
 		else {
 			session.setAttribute("emp_login", emp);
+			session.removeAttribute("message");
 			Cookie emp_login = null;
 			Cookie check_role = null;
 			String role = roleDAO.findRolesByID(emp.getRoleId()).getRoleName();
@@ -99,6 +103,50 @@ public class AuthenticationController {
 			}
 		}
 		return "redirect:/login";
+	}
+	
+	/*--------------------Forget Password-----------*/
+	@RequestMapping(value="/resetpassword", method = RequestMethod.GET)
+	public String resetPassword(Model model) {
+		return "resetpassword";
+	}
+	
+	@SuppressWarnings("finally")
+	@RequestMapping(value="/sendEmail", method = RequestMethod.POST)
+	public String sendEmail(Model model, HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
+		String host = request.getServletContext().getInitParameter("host");
+		String port = request.getServletContext().getInitParameter("port");
+		String email = request.getServletContext().getInitParameter("senderemail");
+		String pass = request.getServletContext().getInitParameter("pass");
+		
+		String recipient = request.getParameter("email");
+		boolean checkEmail = employeeService.checkEmail(recipient);
+		String message = "";
+		HttpSession session = request.getSession();
+		if(checkEmail == false) {
+			message = "Account not exits. Please check your email.";
+			session.setAttribute("email", recipient);
+			request.setAttribute("messageError", message);
+			return "resetpassword";
+		}
+		String subject = "Your Password has been reset";
+		
+		String newPassword = employeeService.resetPassword(recipient);
+		String content = "Hi, this is your new password: "+newPassword
+				+"\nNote: for security reason, "
+				+"you must change your passwod after logging in.";
+		try {
+			EmailUtility.sendEmail(host, port, email, pass, recipient, subject, content);
+			message = "Your password has been reset. Please check your email.";
+		} catch(Exception e) {
+			e.printStackTrace();
+			message = "There were an error: "+e.getMessage();
+		} finally {
+			session.setAttribute("message", message);
+			session.setAttribute("email", recipient);
+			return "redirect:/login";
+		}
 	}
 	
 }

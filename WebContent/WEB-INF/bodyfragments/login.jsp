@@ -2,6 +2,7 @@
 <%@page contentType="text/html;charset=UTF-8" language="java" %>
 <%@page isELIgnored="false" %>
 <div class="container">
+	<div style="padding: 20px;" id="form-olvidado">
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
 			<div class="panel panel-login">
@@ -12,6 +13,11 @@
 						</div>
 					</div>
 					<hr>
+				</div>
+				<div align="center">
+    				<br/>
+    				<%String message = (String)session.getAttribute("message"); %>
+    				<br/>
 				</div>
 				<div class="panel-body">
 					<div class="row">
@@ -36,12 +42,11 @@
 										</div>
 									</div>
 								</div>
-								<p style="color: red;">${message}</p>
 								<div class="form-group">
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="text-center">
-												<a href="#" tabindex="5" class="forgot-password">Forgot Password?</a>
+												<a href="${pageContext.request.contextPath}/resetpassword">Forgot Password?</a>
 											</div>
 										</div>
 									</div>
@@ -53,4 +58,11 @@
 			</div>
 		</div>
 	</div>
+	</div>
 </div>
+<script type="text/javascript">
+	if("<%=message%>" != "null"){
+		var msg = "<%=message%>";
+		alert(msg);
+	}
+</script>

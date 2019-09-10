@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -127,9 +128,9 @@ public class EmployeeService implements UserDetailsService {
 	public boolean checkEmail(String email) {
 		EmployeeInfo emp = employeeDAO.findEmployeeInfoByEmail(email);
 		if (emp == null) {
-			return false;	//email not found
+			return false;	
 		}
-		return true;		//email is already in use
+		return true;		
 	}
 	
 	public boolean checkID(Integer employeeId) {
@@ -138,5 +139,13 @@ public class EmployeeService implements UserDetailsService {
 			return false;
 		}
 		return true;
+	}
+	
+	public String resetPassword(String email) {
+		EmployeeInfo emp = employeeDAO.findEmployeeInfoByEmail(email);
+		String randomPassword = null;
+		randomPassword = RandomStringUtils.randomAlphanumeric(8);
+		employeeDAO.updatePassword(emp.getEmployeeId(), BCrypt.hashpw(randomPassword, BCrypt.gensalt(12)));
+		return randomPassword;
 	}
 }

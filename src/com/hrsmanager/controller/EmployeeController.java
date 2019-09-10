@@ -190,6 +190,8 @@ public class EmployeeController {
 	@RequestMapping(value = { "/employee/{id}" }, method = RequestMethod.GET)
 	public String profile(@PathVariable int id, Model model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
+		session.removeAttribute("errorString");
+		session.removeAttribute("password");
 		String role = null;
 		Cookie cookie = null;
 		Cookie[] cookies = request.getCookies();
