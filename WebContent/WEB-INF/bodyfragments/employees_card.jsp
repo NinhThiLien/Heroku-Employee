@@ -16,7 +16,7 @@
 												<img src="<c:url value="/resources/img/no_avatar.jpg"/>" class="img-fluid" alt="avatar">
 											</c:when>
 											<c:otherwise>
-												<img src="<c:url value="/resources/img/${employee.avatar}"/>" class="img-fluid" alt="avatar">
+												<img src="<c:url value="/resources/img/avatar/${employee.avatar}"/>" class="img-fluid" alt="avatar">
 											</c:otherwise>
 										</c:choose>
 	                               </p>

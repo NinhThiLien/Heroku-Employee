@@ -17,10 +17,6 @@
 		             		</c:otherwise>
 						</c:choose>
 	             	</c:forEach>
-					<!-- <option value="1">ASC Users</option>
-					<option value="2">DESC Users</option>
-					<option value="3">ASC Departments</option>
-					<option value="4">DESC Departments</option> -->
 				</select>
 				<button type="submit" class="btn btn-warning">Sort</button>
 			</div>
@@ -46,17 +42,11 @@
 	        </button>
         </div>
         
-		<form action="${pageContext.request.contextPath}/type" method="post">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-			<div class="col-md-1 text-right" style="padding:0px;">
-		        <button type="submit" name="type_view" value="list" class="show-button">
-					<img src="<c:url value="/resources/img/button_list.png"/>" alt="" width="42" height="42"/>
-				</button>
-		        <button type="submit" name="type_view" value="card" class="show-button">
-					<img src="<c:url value="/resources/img/button_card.png"/>" alt="" width="42" height="42">
-				</button>
-	        </div>
-        </form>
+		<div id="btn-group">
+            <button id="list" class="btn btn-default btn-xs" style="border: 2px solid #828282"><i class="fa fa-bars" style="font-size:35px"></i></button> 
+            <button id="card" class="btn btn-default btn-xs active" style="border: 2px solid #828282"><i class="fa fa-th-large" style="font-size:35px"></i></button>
+        </div>
+		<br>
 	</div>
 	
     <div class="row" style="margin-top:50px;">
@@ -69,47 +59,51 @@
                     ${total}</span>
             </div>
             <div class="panel-body">
-            	<%if ((String) session.getAttribute("type_view")==null||(String) session.getAttribute("type_view")=="card"){ %>
-                	<%@include file="employees_card.jsp" %>
-                <%} else{%>
+                <div id="listlink" style="display:none">
                 	<%@include file="employees_list.jsp" %>
-                	<%} %>
+                </div>
+                <div id="cardlink">
+                	<%@include file="employees_card.jsp" %>
+                </div>
             </div>
         </div>
     </div>
     
-    <div>
+    <div id="pagination">
+    <ul class="pagination">
 	<% int totalPage = (int)session.getAttribute("totalPage");
 		int back = 0;
 		int next = 0;
+		String active = null;
 		boolean has_next = false;
 		int page_cur = (int)request.getAttribute("page_pre");
 		if(totalPage<=3){
 			for (int pageId=1; pageId<= totalPage; pageId++){%>
-			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></li>
 			<%}
 		}else{
 		//Nut Back
 		if (page_cur != 1){
 			back =page_cur-1;
 		%>
-			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/1"><i>First</i></a></button>
-			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=back%>"><i>Back</i></a></button>
+			<li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/employees/1"><i>First</i></a></li>
+			<li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/employees/<%=back%>"><i>Back</i></a></li>
 		<%} else {
 			back = 1;
 		}
 		//Hien Thi Trang
 		if(page_cur+2 < totalPage){
+			System.out.println(page_cur);
 			for (int pageId=page_cur; pageId<= page_cur+2; pageId++){%>
-			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<li class="page-item <%if(pageId==page_cur){out.write("active");}%>"><a class="page-link" href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></li>
 			<%}
 		} else if(page_cur+2 == totalPage){
 			for (int pageId=page_cur; pageId<= page_cur+2; pageId++){%>
-			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<li class="page-item <%if(pageId==page_cur){out.write("active");}%>"><a class="page-link" href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></li>
 			<%}
 		} else {
 			for (int pageId=(totalPage-2); pageId<= totalPage; pageId++){%>
-			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></button>
+			<li class="page-item <%if(pageId==page_cur){out.write("active");}%>"><a class="page-link" href="${pageContext.request.contextPath}/employees/<%=pageId%>"><i><%=pageId%></i></a></li>
 			<%}
 		}
 		if(page_cur < totalPage){
@@ -117,12 +111,13 @@
 			next=page_cur+1;
 		}
 		if(has_next == true){%>			
-			<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=next%>"><i>Next</i></a></button>
+			<li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/employees/<%=next%>"><i>Next</i></a></li>
 		<%}
 		if(page_cur != totalPage){
 		%>
-		<button class="btn btn-default"><a href="${pageContext.request.contextPath}/employees/<%=totalPage%>"><i>Last</i></a></button>
+		<li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/employees/<%=totalPage%>"><i>Last</i></a></li>
 		<%}%>
 		<%}%>
+		</ul>
 	</div>
 </div>

@@ -144,22 +144,6 @@ public class EmployeeController {
 		}
 	}
 
-	@RequestMapping(value = { "/type" }, method = RequestMethod.POST)
-	public String listView(Model model, HttpServletRequest request) {
-		String type = request.getParameter("type_view");
-		HttpSession session = request.getSession();
-		if ("card".equals(type)) {
-			session.setAttribute("type_view", "card");
-			session.setAttribute("total_view", "2");
-			return "redirect:/employees/"+String.valueOf(session.getAttribute("page_pre"));
-		} else {
-			session.setAttribute("type_view", "list");
-			session.setAttribute("total_view", "3");
-			return "redirect:/employees/"+String.valueOf(session.getAttribute("page_pre"));
-		}
-
-	}
-	
 	@RequestMapping(value = { "/ordertype" }, method = RequestMethod.POST)
 	public String orderView(Model model, HttpServletRequest request) {
 		String ordertype = request.getParameter("ordertype");
@@ -238,6 +222,8 @@ public class EmployeeController {
 
 	@RequestMapping(value = { "/employee/{id}/edit" }, method = RequestMethod.GET)
 	public String edit(@PathVariable int id, Model model, HttpServletRequest request) {
+		String path = request.getServletContext().getRealPath("");
+		System.out.println(path);
 		HttpSession session = request.getSession();
 		String role = null;
 		Cookie cookie = null;
@@ -274,6 +260,7 @@ public class EmployeeController {
 				List<PositionInfo> listPositions = positionDAO.listPositions();
 
 				model.addAttribute("emp", emp);
+				session.setAttribute("emp_edit", emp);
 				model.addAttribute("listStatuses", listStatuses);
 				model.addAttribute("listRoles", listRoles);
 				model.addAttribute("listDepartments", listDepartments);
@@ -285,7 +272,7 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = { "/employee/{id}/update" }, method = RequestMethod.POST)
-	public String update(@PathVariable int id, HttpSession session, @RequestParam(value = "name") String name,
+	public String update(@PathVariable int id, HttpServletRequest request, HttpSession session, @RequestParam(value = "name") String name,
 			@RequestParam(value = "gender") String gender, @RequestParam(value = "dob") String dob,
 			@RequestParam(value = "address") String address, @RequestParam(value = "phone") String phone,
 			@RequestParam(value = "email") String email, @RequestParam(value = "std") String std,
@@ -305,8 +292,10 @@ public class EmployeeController {
 		boolean hasError = false;
 		String error = null;
 		String avatar = null;
-		String path = "C:/Users/admin/project-workspace/Employee_Management/WebContent/resources/img";
-
+		String folderName = this.getClass().getClassLoader().getResource("").getPath();
+		String path = folderName.replace("WEB-INF/classes/", "resources/img/avatar");
+		/*String path = "WebContent/resources/img/avatar/";*/
+		System.out.println(path);
 		if (avt.isEmpty()) {
 			avatar = employeeService.findByID(id).getAvatar();
 		} else {
@@ -314,8 +303,9 @@ public class EmployeeController {
 			if (avt.getContentType().contains("image") && avt.getSize() <= 3 * 1024 * 1024) {
 				// upload file
 				byte[] bytes = avt.getBytes();
+				File file = new File(path + File.separator + avatar);
 				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(new File(path + File.separator + avatar)));
+						new FileOutputStream(file));
 				stream.write(bytes);
 				stream.flush();
 				stream.close();
@@ -326,8 +316,11 @@ public class EmployeeController {
 		}
 
 		if (employeeService.checkEmail(email)) {
-			hasError = true;
-			error = "Email is already in use. Please enter another email.";
+			EmployeeInfo emp_check = employeeService.findByEmail(email);
+			if(emp_check.getEmployeeId()!=id) {
+				hasError = true;
+				error = "Email is already in use. Please enter another email.";
+			}
 		}
 		
 		if (hasError) {

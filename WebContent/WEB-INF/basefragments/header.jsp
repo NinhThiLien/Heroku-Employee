@@ -17,7 +17,7 @@
 									<img src="<c:url value="/resources/img/no_avatar.jpg"/>" class="header-avatar img-circle img-thumbnail" alt="avatar">
 								</c:when>
 								<c:otherwise>
-									<img src="<c:url value="/resources/img/${emp_login.avatar}"/>" class="header-avatar img-circle img-thumbnail" alt="avatar">
+									<img src="<c:url value="/resources/img/avatar/${emp_login.avatar}"/>" class="header-avatar img-circle img-thumbnail" alt="avatar">
 								</c:otherwise>
 							</c:choose>
 						</a>

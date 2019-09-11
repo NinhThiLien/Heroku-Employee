@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ page import="com.hrsmanager.model.*" %>
 
 <div class="container">
     <div class="row">
@@ -14,7 +15,7 @@
 							<img src="<c:url value="/resources/img/no_avatar.jpg"/>" id="imgInp" class="avatar img-circle img-thumbnail" alt="avatar">
 						</c:when>
 						<c:otherwise>
-							<img src="<c:url value="/resources/img/${emp.avatar}"/>" id="imgInp" class="avatar img-circle img-thumbnail" alt="avatar">
+							<img src="<c:url value="/resources/img/avatar/${emp.avatar}"/>" id="imgInp" class="avatar img-circle img-thumbnail" alt="avatar">
 						</c:otherwise>
 					</c:choose>
 					<h6>Upload a different photo...</h6>
@@ -79,18 +80,20 @@
 		             		</div>
 		             		
 		             		<div class="form-group">
+		             		<% EmployeeInfo emp_edit = (EmployeeInfo)session.getAttribute("emp_edit");
+		             		String gender = emp_edit.getGender();%>
 								<label class="col-sm-4 control-label" for="gender">
 									Gender <span style="color:red;">*</span>
 								</label>
 								<div class="col-sm-5"> 
 									<label class="radio-inline" for="male">
-										<input type="radio" name="gender" id="male" value="Male" checked="checked"> Male
+										<input type="radio" name="gender" id="male" value="Male" <%if(gender.equals("Male")){out.write("checked='checked'");} %>> Male
 									</label> 
 									<label class="radio-inline" for="female">
-										<input type="radio" name="gender" id="female" value="Female"> Female
+										<input type="radio" name="gender" id="female" value="Female" <%if(emp_edit.getGender().equals("Female")){out.write("checked='checked'");} %>> Female
 									</label>
 									<label class="radio-inline" for="other">
-										<input type="radio" name="gender" id="other" value="Other"> Other
+										<input type="radio" name="gender" id="other" value="Other" <%if(emp_edit.getGender().equals("Other")){out.write("checked='checked'");} %>> Other
 									</label>
 								</div>
 							</div>
@@ -260,7 +263,6 @@
 		             			<label class="col-sm-4 control-label" ></label>  
 		             			<div class="col-sm-5">
 		             				<input type="submit" name="submit" id="submit" tabindex="4" class="btn btn-success" value="Update">
-		             				<input type="reset" name="reset" id="reset" tabindex="4" class="btn btn-info" value="Reset">
 		             				<a onclick="window.history.back()" class="btn btn-danger">Cancel</a>
 		             			</div>
 		             		</div>

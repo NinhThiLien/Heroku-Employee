@@ -4,3 +4,4 @@ target/**
 .project
 build/**
 !datasource-cfg.properties
+data.properties
